@@ -1,0 +1,8 @@
+.image {
+  max-width: 500px;
+}
+.editRoot {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+}

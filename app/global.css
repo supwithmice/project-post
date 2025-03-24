@@ -1,0 +1,22 @@
+* {
+  transition-property: -moz-filter, -ms-filter, -o-filter, -webkit-filter,
+  filter, background-color, border-color;
+  transition-duration: 0.2s;
+  box-sizing: border-box;
+}
+
+
+body{
+  margin-bottom: 10rem;
+  @mixin light {
+    --mantine-color-body: whitesmoke;
+  }
+}
+
+@media screen and (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

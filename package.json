@@ -9,8 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@mantine/core": "7.17.2",
-    "@mantine/hooks": "7.17.2",
+    "@floating-ui/react": "^0.26.28",
+    "@mantine/core": "^7.17.2",
+    "@mantine/dropzone": "^7.17.2",
+    "@mantine/form": "^7.17.2",
+    "@mantine/hooks": "^7.17.2",
+    "@mantine/modals": "^7.17.2",
+    "@mantine/notifications": "^7.17.2",
+    "@tabler/icons-react": "^3.31.0",
+    "file-type": "^20.4.1",
+    "firebase": "^11.5.0",
     "next": "15.1.5",
     "react": "19.0.0",
     "react-dom": "19.0.0"

@@ -1,7 +1,10 @@
-"use client";
+'use client'
 
-import { createTheme } from "@mantine/core";
+import { createTheme, virtualColor } from '@mantine/core'
 
 export const theme = createTheme({
   /* Put your mantine theme override here */
-});
+  defaultRadius: 'md',
+  primaryColor: 'violet',
+  autoContrast: true,
+})

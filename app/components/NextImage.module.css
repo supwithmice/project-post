@@ -1,0 +1,32 @@
+.imageRoot,
+.icon {
+  transition-property: -moz-filter, -ms-filter, -o-filter, -webkit-filter,
+    filter;
+  transition-duration: 0.2s;
+  transition-timing-function: ease;
+}
+
+.imageRoot {
+  position: relative;
+  width: 100%;
+}
+
+.icon {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+@media (hover: hover) {
+  .icon {
+    display: none;
+  }
+
+  .hoverable:hover {
+    filter: brightness(0.9);
+  }
+
+  .hoverable:hover .icon {
+    display: block;
+  }
+}
