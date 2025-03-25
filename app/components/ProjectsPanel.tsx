@@ -20,13 +20,13 @@ import { useState } from 'react'
 import cx from 'clsx'
 import { IconEdit } from '@tabler/icons-react'
 
-export default function ProjectsPanel({ id }: { id: number }) {
+export default function ProjectsPanel({ id }: { id: string }) {
   const [opened, { toggle, close }] = useDisclosure()
   const [projectOpened, setProjectOpened] = useState(0)
 
   const projects: Project[] = sampleProjects.filter(
     (value) => value.projectAuthor.id === id
-  ) // firebase
+  ) // database
 
   const isMobile = useMediaQuery(`(max-width: ${em(768)})`)
   const isProjects = projects.length > 0

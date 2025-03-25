@@ -10,7 +10,6 @@ export type Project = {
 }
 
 export type Image = {
-  imageId: number
   imageUrl: string
   imageDescription: string
   aspectRatio?: string

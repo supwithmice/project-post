@@ -24,7 +24,7 @@ export default async function ProjectPage({
   const id = Number((await params).id)
   const project: Project | undefined = isNaN(id)
     ? undefined
-    : sampleProjects.find((project) => project.id === id) // get this from firebase
+    : sampleProjects.find((project) => project.id === id) // get this from database
 
   if (!project) {
     return (
@@ -50,8 +50,8 @@ export default async function ProjectPage({
               <Title order={2}>{project.projectName}</Title>
               <Badge
                 color={project.projectAuthor.accentColor}
-                component={Link}
-                href={`/account/${project.projectAuthor.id}`}
+                // component={Link}
+                // href={`/account/${project.projectAuthor.id}`}
                 leftSection={
                   <Avatar
                     color={project.projectAuthor.accentColor}

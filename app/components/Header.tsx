@@ -12,18 +12,18 @@ import {
   Burger,
   Drawer,
   Menu,
+  Badge,
 } from '@mantine/core'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import ThemeSwitcher from './ThemeSwitcher'
 import classes from './Header.module.css'
 import { useDisclosure, useMediaQuery } from '@mantine/hooks'
-import {
-  IconLogout,
-  IconPlus,
-  IconSettings,
-  IconUser,
-} from '@tabler/icons-react'
+import { IconLogout, IconPlus, IconUser } from '@tabler/icons-react'
+import { signOut } from '../login/actions'
+import { createClient } from '../utils/supabase/client'
+import { useEffect, useState } from 'react'
+import { User } from '@supabase/supabase-js'
 
 const navLinkClassNames = {
   root: classes.mantineNavLinkRoot,
@@ -43,13 +43,30 @@ const links = [
 
 export default function Header() {
   const pathName = usePathname()
+  const router = useRouter()
   const [opened, { toggle, close }] = useDisclosure()
   const isMobile = useMediaQuery(`(max-width: ${em(768)})`)
+  const [user, setUser] = useState<User | null>(null)
 
-  const isSignedIn = true // placeholder
+  useEffect(() => {
+    const supabase = createClient()
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+
+  async function handleSignout() {
+    await signOut()
+    router.push('/')
+  }
 
   return (
-    // welcome to hell
     <>
       <Group h={isMobile ? 60 : 70}></Group>
       <header>
@@ -96,8 +113,12 @@ export default function Header() {
               ))}
           </Group>
           <Group gap={isMobile ? 'xs' : 'md'}>
-            {!isSignedIn && <Button>Войти</Button>}
-            {isSignedIn && (
+            {!user && (
+              <Button component={Link} href="/login">
+                Войти
+              </Button>
+            )}
+            {user && (
               <>
                 {isMobile ? (
                   <ActionIcon component={Link} href="/create" size="lg">
@@ -109,31 +130,39 @@ export default function Header() {
                   </Button>
                 )}
 
-                <Menu shadow="md" width={200}>
+                <Menu shadow="md" width={200} zIndex={3000}>
                   <Menu.Target>
                     <Avatar
                       radius="xl"
                       classNames={{ root: classes.mantineAvatarRoot }}
-                      // color={project.projectAuthor.accentColor}
-                      // name={project.projectAuthor.accountName}
+                      color={user.user_metadata.accentColor}
+                      name={user.user_metadata.username}
                     ></Avatar>
                   </Menu.Target>
 
                   <Menu.Dropdown>
-                    <Menu.Item leftSection={<IconUser size={14} />}>
-                      Мой аккаунт
-                    </Menu.Item>
-                    <Menu.Item
-                      // component={Link}
-                      // href={`/account/${account.id}`} // firebase
-                      leftSection={<IconSettings size={14} />}
+                    <Badge
+                      color={user.user_metadata.accentColor}
+                      size="md"
+                      fullWidth
+                      my="5"
+                      variant="outline"
+                      pr="sm"
                     >
-                      Настройки
+                      {user.user_metadata.username}
+                    </Badge>
+                    <Menu.Item
+                      leftSection={<IconUser size={14} />}
+                      component={Link}
+                      href={`/account`}
+                    >
+                      Мой аккаунт
                     </Menu.Item>
                     <Menu.Divider />
                     <Menu.Item
                       color="red"
                       leftSection={<IconLogout size={14} />}
+                      onClick={handleSignout}
                     >
                       Выйти
                     </Menu.Item>

@@ -3,14 +3,14 @@
   text-transform: none;
 }
 
-.badgeRoot:hover {
+/* .badgeRoot:hover {
   @mixin light {
     background-color: rgba(10, 10, 10, 0.1);
   }
   @mixin dark {
     background-color: rgba(255, 255, 255, 0.09);
   }
-}
+} */
 
 .image {
   max-width: 500px;
