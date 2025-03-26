@@ -18,17 +18,17 @@ import {
 
 import { useForm } from '@mantine/form'
 import { IconPhoto, IconTrash, IconUpload } from '@tabler/icons-react'
-import { getFileIcon } from '../components/ProjectContent'
+import { getFileIcon } from '../_utils/components/ProjectContent'
 import { submitProject } from './actions'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { redirect } from 'next/navigation'
 
 // welcome to hell, again
 
 export type ProjectSubmit = {
-  projectName: string
-  projectBriefDescription: string
-  projectDescription: string | undefined
+  name: string
+  briefDescription: string
+  description: string | undefined
   banner: File | undefined
   images:
     | {
@@ -39,7 +39,7 @@ export type ProjectSubmit = {
 }
 
 export default function CreatePage() {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   async function handleSubmit(project: ProjectSubmit) {
     setLoading(true)
@@ -54,17 +54,17 @@ export default function CreatePage() {
   const form = useForm<ProjectSubmit>({
     mode: 'uncontrolled',
     initialValues: {
-      projectName: '',
-      projectBriefDescription: '',
-      projectDescription: '',
+      name: '',
+      briefDescription: '',
+      description: '',
       images: [],
       files: [],
       banner: undefined,
     },
     validate: {
-      projectName: (value) => (value.length < 1 ? 'Введите имя проекта' : null),
-      projectBriefDescription: (value) =>
-        value.length < 1 ? 'Введите краткое описание' : null,
+      name: (value) => (value.length === 0 ? 'Введите имя проекта' : null),
+      briefDescription: (value) =>
+        value.length === 0 ? 'Введите краткое описание' : null,
     },
   })
 
@@ -131,10 +131,15 @@ export default function CreatePage() {
   const handleFiles = (files: File[]) => {
     form.setFieldValue('files', [...form.getValues().files, ...files])
   }
+
+  useEffect(() => {
+    setLoading(false)
+  }, [])
+
   return (
     <Stack>
       <Title order={2}>Создание проекта</Title>
-      <form onSubmit={form.onSubmit(handleSubmit)}>
+      <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
         <Grid>
           <Grid.Col span={{ base: 12, lg: 6 }} h="100%">
             <Fieldset legend="Данные проекта">
@@ -144,7 +149,7 @@ export default function CreatePage() {
                   withAsterisk
                   label="Имя проекта"
                   // placeholder="Лучший проект в мире" // cringe
-                  {...form.getInputProps('projectName')}
+                  {...form.getInputProps('name')}
                 />
                 <Textarea
                   disabled={loading}
@@ -153,7 +158,7 @@ export default function CreatePage() {
                   minRows={2}
                   label="Краткое описание"
                   description="Это описание будет указано на карточке проекта в каталоге"
-                  {...form.getInputProps('projectBriefDescription')}
+                  {...form.getInputProps('briefDescription')}
                 />
                 <Textarea
                   disabled={loading}
@@ -161,7 +166,7 @@ export default function CreatePage() {
                   minRows={4}
                   label="Подробное описание"
                   description="Это описание будет указано на странице проекта"
-                  {...form.getInputProps('projectDescription')}
+                  {...form.getInputProps('description')}
                 />
                 <FileInput
                   disabled={loading}

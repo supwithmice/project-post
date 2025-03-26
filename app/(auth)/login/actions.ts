@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-import { createClient } from '../utils/supabase/server'
+import { createClient } from '../../_utils/supabase/server'
 import {
   AuthError,
   SignInWithPasswordCredentials,
@@ -37,7 +37,7 @@ export async function signup(data: {
     password: data.password,
     options: {
       data: {
-        accentColor: data.accentColor,
+        accent_color: data.accentColor,
         username: data.username,
       },
     },

@@ -11,24 +11,18 @@ import {
   ActionIcon,
   em,
 } from '@mantine/core'
-import { useDisclosure, useMediaQuery } from '@mantine/hooks'
-import { Project } from '../types'
+import { useDisclosure } from '@mantine/hooks'
+import { Project } from '../../types'
 import classes from './ProjectsPanel.module.css'
-import { sampleProjects } from '../../sampleData'
 import ProjectContent from './ProjectContent'
 import { useState } from 'react'
 import cx from 'clsx'
 import { IconEdit } from '@tabler/icons-react'
 
-export default function ProjectsPanel({ id }: { id: string }) {
+export default function ProjectsPanel({ projects }: { projects: Project[] }) {
   const [opened, { toggle, close }] = useDisclosure()
   const [projectOpened, setProjectOpened] = useState(0)
 
-  const projects: Project[] = sampleProjects.filter(
-    (value) => value.projectAuthor.id === id
-  ) // database
-
-  const isMobile = useMediaQuery(`(max-width: ${em(768)})`)
   const isProjects = projects.length > 0
   const isProjectsMultiple = projects.length > 1
 
@@ -63,7 +57,7 @@ export default function ProjectsPanel({ id }: { id: string }) {
       )}
       {isProjects && (
         <>
-          <AppShell.Navbar p="md" pos="absolute" >
+          <AppShell.Navbar p="md" pos="absolute">
             <Stack>
               {projects.map((project, index) => (
                 <Card
@@ -91,18 +85,17 @@ export default function ProjectsPanel({ id }: { id: string }) {
                     <IconEdit />
                   </ActionIcon>
                   <Title order={4} lineClamp={3} mr="18px">
-                    {project.projectName}
+                    {project.name}
                   </Title>
                 </Card>
               ))}
             </Stack>
           </AppShell.Navbar>
           <AppShell.Main>
-            {isMobile && (
-              <Title order={4} size="h2" mb="md">
-                {projects[projectOpened].projectName}
-              </Title>
-            )}
+            <Title order={4} size="h2" mb="md" hiddenFrom="sm">
+              {projects[projectOpened].name}
+            </Title>
+
             <ProjectContent project={projects[projectOpened]} />
           </AppShell.Main>
         </>

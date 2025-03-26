@@ -1,8 +1,7 @@
 'use server'
 
-import { redirect } from 'next/navigation'
-import { FileData, Image } from '../types'
-import { createClient } from '../utils/supabase/server'
+import { FileData, Image, Project } from '../types'
+import { createClient } from '../_utils/supabase/server'
 import { ProjectSubmit } from './page'
 import * as crypto from 'crypto'
 
@@ -14,7 +13,6 @@ async function getFileMD5FromBuffer(fileBuffer: Promise<ArrayBuffer>) {
     : Buffer.from(resolvedBuffer)
   return crypto.createHash('md5').update(buffer).digest('hex')
 }
-
 
 export async function submitProject(
   project: ProjectSubmit
@@ -100,10 +98,10 @@ export async function submitProject(
 
   // add database entry
   const dbResponse = await supabase.from('projects').insert({
-    project_uid: projectUid,
-    name: project.projectName,
-    brief_description: project.projectBriefDescription,
-    description: project.projectDescription,
+    project_uuid: projectUid,
+    name: project.name,
+    brief_description: project.briefDescription,
+    description: project.description,
     author_uuid: user.data.user.id,
     banner_url: project.banner ? baseUrl + (banner?.data?.fullPath ?? null) : null,
     images: imageList,

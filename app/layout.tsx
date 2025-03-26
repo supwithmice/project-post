@@ -1,6 +1,5 @@
 import '@mantine/core/styles.css'
 import './global.css'
-import React from 'react'
 import {
   MantineProvider,
   ColorSchemeScript,
@@ -8,8 +7,10 @@ import {
   Container,
 } from '@mantine/core'
 import { theme } from '../theme'
-import Header from './components/Header'
+import Header from './_utils/components/header/Header'
 import { ModalsProvider } from '@mantine/modals'
+import AccountActions from './_utils/components/header/AccountActions'
+import { createClient } from './_utils/supabase/server'
 
 export const metadata = {
   title: 'Project Post',
@@ -21,10 +22,12 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  // const content = lazy()
 
-  // const supabase = await createClient()
-
-
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
   return (
     <html lang="ru" {...mantineHtmlProps}>
@@ -39,7 +42,7 @@ export default async function RootLayout({
       <body>
         <MantineProvider theme={theme} defaultColorScheme="light">
           <ModalsProvider>
-            <Header />
+            <Header actions={<AccountActions user={user} />} />
             <Container mt="md" maw="1400px">
               {children}
             </Container>

@@ -1,12 +1,11 @@
 * {
   transition-property: -moz-filter, -ms-filter, -o-filter, -webkit-filter,
-  filter, background-color, border-color;
+    filter, background-color, border-color;
   transition-duration: 0.2s;
   box-sizing: border-box;
 }
 
-
-body{
+body {
   margin-bottom: 10rem;
   @mixin light {
     --mantine-color-body: whitesmoke;
@@ -19,4 +18,17 @@ body{
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
+}
+
+/* dont wanna create a file just for these sooooo */
+.notFound {
+  max-width: 500px;
+}
+
+.pageCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
 }

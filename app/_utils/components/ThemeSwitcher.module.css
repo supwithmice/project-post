@@ -22,3 +22,9 @@
     display: block;
   }
 }
+
+.iconRoot {
+  @media screen and (min-width: 768px) {
+    size: 2.4em;
+  }
+}

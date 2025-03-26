@@ -9,21 +9,18 @@ import {
   Card,
   ActionIcon,
 } from '@mantine/core'
-import ProjectsPanel from '../components/ProjectsPanel'
+import ProjectsPanel from '../_utils/components/ProjectsPanel'
 import { IconEdit } from '@tabler/icons-react'
 import classes from './page.module.css'
-import { createClient } from '../utils/supabase/server'
+import { fetchUserProjects } from './actions'
 import { redirect } from 'next/navigation'
 
-
 export default async function AccountPage() {
-  const supabase = await createClient()
-
-  const { data, error } = await supabase.auth.getUser()
-  if (error || !data?.user) {
-    redirect('/login')
+  const { error, user, projects } = await fetchUserProjects()
+  if (error ) {
+    console.error(error)
+    redirect('/error')
   }
-  const user = data.user
 
   return (
     <>
@@ -31,16 +28,18 @@ export default async function AccountPage() {
         <GridCol span={{ base: 12, sm: 4 }}>
           <Card h="100%" shadow="md">
             TODO onClick
-            <ActionIcon classNames={{root: classes.editRoot}} variant='light' ><IconEdit/></ActionIcon>
+            <ActionIcon classNames={{ root: classes.editRoot }} variant="light">
+              <IconEdit />
+            </ActionIcon>
             <Stack gap="md" align="flex-start">
               <Title order={2}>Аккаунт</Title>
               <Group align="center">
                 <Avatar
-                  color={user.user_metadata?.accentColor}
-                  name={user.user_metadata?.username}
+                  color={user!.user_metadata.accentColor}
+                  name={user!.user_metadata.username}
                   size="lg"
                 />
-                <Text fs="md">{user.user_metadata?.username}</Text>
+                <Text fs="md">{user!.user_metadata?.username}</Text>
               </Group>
             </Stack>
           </Card>
@@ -54,7 +53,7 @@ export default async function AccountPage() {
           </Card>
         </GridCol>
       </Grid>
-        <ProjectsPanel id={user.id} />
+      <ProjectsPanel projects={projects!} />
     </>
   )
 }

@@ -39,16 +39,21 @@ export async function updateSession(request: NextRequest) {
 
   if (
     !user &&
+    !(request.nextUrl.pathname === '/') &&
     !request.nextUrl.pathname.startsWith('/login') &&
+    !request.nextUrl.pathname.startsWith('/auth') &&
     !request.nextUrl.pathname.startsWith('/projects') &&
-    !request.nextUrl.pathname.startsWith('/auth')
+    !request.nextUrl.pathname.startsWith('/about') &&
+    !request.nextUrl.pathname.startsWith('/error')
   ) {
-    // no user, potentially respond by redirecting the user to the login page
+    // no user, redirect to the login page
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
+
   if (user && request.nextUrl.pathname.startsWith('/login')) {
+    // already logged in, redirect to the homepage
     const url = request.nextUrl.clone()
     url.pathname = '/'
     return NextResponse.redirect(url)

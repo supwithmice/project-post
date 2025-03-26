@@ -16,19 +16,19 @@ import {
   Title,
   Text,
 } from '@mantine/core'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   IconArrowLeft,
   IconAt,
   IconPassword,
   IconUser,
 } from '@tabler/icons-react'
-import { revalidatePath } from 'next/cache'
 import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
   const [isSignUp, setIsSignUp] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [msg, setMsg] = useState<React.ReactNode | null>(null)
   const router = useRouter()
 
   const loginForm = useForm<{
@@ -67,7 +67,7 @@ export default function LoginPage() {
       username: '',
       email: '',
       password: '',
-      accentColor: '#fa5252',
+      accentColor: '#7950f2',
     },
     validate: {
       username: (value) => (value.length === 0 ? 'Введите имя' : null),
@@ -88,6 +88,7 @@ export default function LoginPage() {
 
   async function handleLogin(values: any) {
     setLoading(true)
+
     const { error } = await login(values)
     if (error) {
       loginForm.setFieldError(
@@ -101,14 +102,24 @@ export default function LoginPage() {
   }
   async function handleSignup(values: any) {
     setLoading(true)
+    setMsg(null)
+
     const { error } = await signup(values)
     if (error) {
-      loginForm.setFieldError('username', <Text fz="xs">{error.message}</Text>)
       setLoading(false)
+      setMsg(
+        <Text fz="sm" c="red">
+          {error.message}
+        </Text>
+      )
     } else {
       router.push('/')
     }
   }
+
+  useEffect(() => {
+    setLoading(false)
+  }, [])
 
   return (
     <Flex justify="center" align="center" h="75vh">
@@ -199,7 +210,7 @@ export default function LoginPage() {
 
                 <ColorInput
                   disabled={loading}
-                  defaultValue={DEFAULT_THEME.colors.violet[5]}
+                  defaultValue={'#7950f2'}
                   label="Цвет"
                   description="Изменяет цвет сайта"
                   swatches={[
@@ -219,8 +230,9 @@ export default function LoginPage() {
                   withPicker={false}
                   swatchesPerRow={6}
                   disallowInput
+                  {...signUpForm.getInputProps('accentColor')}
                 />
-
+                {msg}
                 <Group justify="center" mt="md">
                   <Button type="submit" disabled={loading}>
                     Зарегистрироваться

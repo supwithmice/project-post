@@ -1,11 +1,22 @@
-import { Grid, Title } from '@mantine/core'
-import { sampleProjects } from '../sampleData'
-import { Project } from './types'
-import ProjectCard from './components/ProjectCard'
-import GoogleOneTap from './components/GoogleOneTap'
+import { Box, Grid, Title } from '@mantine/core'
+import ProjectCard from './_utils/components/ProjectCard'
+import { fetchProjects } from './projects/actions'
+import { redirect } from 'next/navigation'
 
-export default function HomePage() {
-  const data = [...sampleProjects, ...sampleProjects]
+export default async function HomePage() {
+  const { data, error } = await fetchProjects()
+  if (error) {
+    redirect('/error')
+  }
+  if (!data || data.length === 0) {
+    return (
+      <Box className='pageCenter'>
+        <Title size="h3" order={2} my="md" textWrap="nowrap">
+          Нет проектов
+        </Title>
+      </Box>
+    )
+  }
 
   return (
     <>

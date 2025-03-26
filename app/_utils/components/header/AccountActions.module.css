@@ -1,0 +1,21 @@
+.mantineAvatarRoot:hover,
+.mantineNavLinkRoot:hover:not([data-active]) {
+  @mixin light {
+    background-color: rgba(10, 10, 10, 0.1) !important;
+  }
+  @mixin dark {
+    background-color: rgba(223, 223, 223, 0.07) !important;
+  }
+}
+
+.desktopIcon {
+  @media screen and (max-width: 768px) {
+    display: none !important;
+  }
+}
+
+.mobileIcon {
+  @media screen and (min-width: 768px) {
+    display: none !important;
+  }
+}

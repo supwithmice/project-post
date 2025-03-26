@@ -5,7 +5,7 @@ import NextImage from './NextImage'
 import { IconMaximize } from '@tabler/icons-react'
 import classes from './Gallery.module.css'
 import { modals } from '@mantine/modals'
-import { Image } from '../types'
+import { Image } from '../../types'
 
 // here i might have wasted time on nothing. don't ask
 const imageDisplay = (image: Image) => {

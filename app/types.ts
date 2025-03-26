@@ -1,12 +1,21 @@
+import { Json } from "./_utils/supabase/supabaseTypes"
+
 export type Project = {
-  id: number
-  projectName: string
-  projectBriefDescription: string
-  projectDescription: string
-  projectAuthor: Account
-  bannerUrl: string
+  id: string
+  name: string
+  briefDescription: string
+  description: string | null
+  authorAccount: Account
+  bannerUrl: string | null
   images: Image[]
   files: FileData[]
+}
+
+export type ProjectListing = {
+  id: string
+  name: string
+  briefDescription: string
+  bannerUrl: string | null
 }
 
 export type Image = {
@@ -16,8 +25,8 @@ export type Image = {
 }
 
 export type Account = {
-  id: number
-  accountName: string
+  id: string
+  username: string
   accentColor: string
 }
 
