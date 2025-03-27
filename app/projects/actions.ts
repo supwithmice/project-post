@@ -2,7 +2,7 @@
 
 import { PostgrestError } from '@supabase/supabase-js'
 import { createClient } from '../_utils/supabase/server'
-import { Project, ProjectListing } from '../types'
+import { isFileData, isImage, Project, ProjectListing } from '../types'
 
 export async function fetchProjects(): Promise<{
   data?: ProjectListing[]
@@ -45,6 +45,10 @@ export async function fetchProjectById(id: string): Promise<{
     return { error: error }
   }
 
+  const images = Array.isArray(data.images) ? data.images.filter(isImage) : []
+
+  const files = Array.isArray(data.files) ? data.files.filter(isFileData) : []
+
   const parsedProject: Project = {
     id: data.project_uuid,
     name: data.name,
@@ -56,8 +60,8 @@ export async function fetchProjectById(id: string): Promise<{
       accentColor: data.accounts.accent_color,
     },
     bannerUrl: data.banner_url,
-    files: data.files,
-    images: data.images,
+    files: files,
+    images: images,
   }
 
   return { data: parsedProject }

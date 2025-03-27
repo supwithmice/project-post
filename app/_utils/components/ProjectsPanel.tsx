@@ -9,22 +9,61 @@ import {
   Card,
   Stack,
   ActionIcon,
-  em,
+  Button,
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { Project } from '../../types'
+import { Project, ProjectSubmit } from '../../types'
 import classes from './ProjectsPanel.module.css'
 import ProjectContent from './ProjectContent'
 import { useState } from 'react'
 import cx from 'clsx'
 import { IconEdit } from '@tabler/icons-react'
+import { editProject } from '../../account/actions'
+import { modals } from '@mantine/modals'
+import ProjectEditor from './ProjectEditor'
+import { redirect } from 'next/navigation'
+import { revalidatePath } from 'next/cache'
 
 export default function ProjectsPanel({ projects }: { projects: Project[] }) {
   const [opened, { toggle, close }] = useDisclosure()
   const [projectOpened, setProjectOpened] = useState(0)
 
   const isProjects = projects.length > 0
-  const isProjectsMultiple = projects.length > 1
+
+  const handleEdit = async (uid: string, newProject: ProjectSubmit) => {
+    const { error } = await editProject(uid, newProject)
+    if (error) {
+      console.error(error)
+      redirect('/error')
+    }
+    revalidatePath('/account')
+    modals.closeAll()
+    redirect('/account')
+  }
+
+  const openEditModal = (project: Project) => {
+    modals.open({
+      title: `Редактировать проект`,
+      centered: true,
+      children: (
+        <ProjectEditor
+          submitText="Сохранить"
+          onSubmit={(newProject) => handleEdit(project.id, newProject)}
+          otherActions={[
+            <Button variant="light" onClick={modals.closeAll}>
+              Отмена
+            </Button>,
+          ]}
+          initialValues={{
+            // look, i'm almost done with this project. i'll just make a workaround for images and files, then call it a day
+            ...project,
+            description: project.description ? project.description : undefined,
+            banner: project.bannerUrl ? project.bannerUrl : undefined,
+          }}
+        />
+      ),
+    })
+  }
 
   return (
     <AppShell
@@ -39,14 +78,8 @@ export default function ProjectsPanel({ projects }: { projects: Project[] }) {
     >
       <AppShell.Header pos="absolute">
         <Group h="100%" px="md">
-          {isProjectsMultiple && (
-            <Burger
-              opened={opened}
-              onClick={toggle}
-              hiddenFrom="sm"
-              size="sm"
-            />
-          )}
+          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+
           <Title order={3}>Проекты</Title>
         </Group>
       </AppShell.Header>
@@ -74,13 +107,13 @@ export default function ProjectsPanel({ projects }: { projects: Project[] }) {
                     close()
                   }}
                 >
-                  {/* TODO: onClick */}
                   <ActionIcon
                     pos="absolute"
                     top="10px"
                     right="10px"
                     size="sm"
                     variant="light"
+                    onClick={() => openEditModal(project)}
                   >
                     <IconEdit />
                   </ActionIcon>

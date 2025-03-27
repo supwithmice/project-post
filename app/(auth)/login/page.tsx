@@ -36,6 +36,7 @@ export default function LoginPage() {
     password: string
   }>({
     mode: 'uncontrolled',
+    validateInputOnBlur: true,
     initialValues: {
       email: '',
       password: '',
@@ -44,8 +45,6 @@ export default function LoginPage() {
       password: (value) =>
         value.length === 0
           ? 'Введите пароль'
-          : value.length < 6
-          ? 'Неверный пароль'
           : null,
       email: (value) =>
         value.length === 0
@@ -63,6 +62,7 @@ export default function LoginPage() {
     accentColor: string
   }>({
     mode: 'uncontrolled',
+    validateInputOnBlur: true,
     initialValues: {
       username: '',
       email: '',
@@ -214,19 +214,19 @@ export default function LoginPage() {
                   label="Цвет"
                   description="Изменяет цвет сайта"
                   swatches={[
-                    DEFAULT_THEME.colors.red[6],
-                    DEFAULT_THEME.colors.pink[6],
-                    DEFAULT_THEME.colors.grape[6],
-                    DEFAULT_THEME.colors.violet[6],
-                    DEFAULT_THEME.colors.indigo[6],
-                    DEFAULT_THEME.colors.blue[6],
-                    DEFAULT_THEME.colors.cyan[6],
-                    DEFAULT_THEME.colors.teal[6],
-                    DEFAULT_THEME.colors.green[6],
-                    DEFAULT_THEME.colors.lime[6],
-                    DEFAULT_THEME.colors.yellow[6],
-                    DEFAULT_THEME.colors.orange[6],
-                  ]}
+                    'red',
+                    'pink',
+                    'grape',
+                    'violet',
+                    'indigo',
+                    'blue',
+                    'cyan',
+                    'teal',
+                    'green',
+                    'lime',
+                    'yellow',
+                    'orange',
+                  ].map((color) => DEFAULT_THEME.colors[color][6])}
                   withPicker={false}
                   swatchesPerRow={6}
                   disallowInput

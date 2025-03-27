@@ -1,5 +1,5 @@
-/* TODO:  make focus ring */
 .cardRoot:hover .title {
   text-decoration: underline;
 }
 
+/* TODO:  make focus ring */

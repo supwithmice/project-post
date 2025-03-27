@@ -1,4 +1,21 @@
-import { Json } from "./_utils/supabase/supabaseTypes"
+export function isImage(value: any): value is Image {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof (value as Image).imageUrl === 'string' &&
+    typeof (value as Image).imageDescription === 'string'
+  )
+}
+
+export function isFileData(value: any): value is FileData {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof (value as FileData).fileName === 'string' &&
+    typeof (value as FileData).fileType === 'string' &&
+    typeof (value as FileData).fileUrl === 'string'
+  )
+}
 
 export type Project = {
   id: string
@@ -34,4 +51,18 @@ export type FileData = {
   fileName: string
   fileType: string
   fileUrl: string
+}
+
+export type ProjectSubmit = {
+  name: string
+  briefDescription: string
+  description: string | undefined
+  banner: File | string | undefined
+  images:
+    | {
+        file: File
+        description: string
+      }[]
+    | Image[]
+  files: File[] | FileData[]
 }
