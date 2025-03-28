@@ -1,6 +1,6 @@
 'use client'
 
-import { Grid, GridCol, Modal, Text } from '@mantine/core'
+import { Grid, GridCol, Image as MantineImage, Text } from '@mantine/core'
 import NextImage from './NextImage'
 import { IconMaximize } from '@tabler/icons-react'
 import classes from './Gallery.module.css'
@@ -23,13 +23,7 @@ const imageDisplay = (image: Image) => {
     },
     children: (
       <>
-        <NextImage
-          src={image.imageUrl}
-          alt="Картинка"
-          aspectRatio={image.aspectRatio}
-          radius="md"
-          classNames={{ root: classes.image }}
-        ></NextImage>
+        <MantineImage src={image.imageUrl} alt="Картинка"/>
         <Text mt="sm">{image.imageDescription}</Text>
       </>
     ),
@@ -57,6 +51,7 @@ export default function Gallery({
               onClick: () => imageDisplay(image),
             }}
           />
+          {/* <MantineImage src={image.imageUrl} radius="md"/> */}
         </GridCol>
       ))}
     </Grid>

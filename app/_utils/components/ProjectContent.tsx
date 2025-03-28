@@ -63,7 +63,7 @@ export const getFileIcon = (mimeType: string) => {
   ) {
     return <IconFileZip size={20} color="var(--mantine-color-violet-6)" />
   }
-  return <IconFile size={20} color="var(--mantine-color-white)" />
+  return <IconFile size={20} />
 }
 
 export default function ProjectContent({ project }: { project: Project }) {

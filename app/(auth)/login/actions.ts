@@ -3,24 +3,23 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '../../_utils/supabase/server'
 import {
-  AuthError,
   SignInWithPasswordCredentials,
   SignUpWithPasswordCredentials,
 } from '@supabase/auth-js'
-import { StorageError } from '@supabase/storage-js'
 
 export async function login(
   user: SignInWithPasswordCredentials
-): Promise<{ error: AuthError | null }> {
+): Promise<{ error?: string }> {
   const supabase = await createClient()
 
   const { error } = await supabase.auth.signInWithPassword(user)
 
   if (error) {
-    return { error: error }
+    console.log(error)
+    return { error: 'login error' }
   }
   revalidatePath('/')
-  return { error: null }
+  return {}
 }
 
 export async function signup(data: {
@@ -28,7 +27,7 @@ export async function signup(data: {
   email: string
   password: string
   accentColor: string
-}): Promise<{ error: AuthError | StorageError | null }> {
+}): Promise<{ error?: string }> {
   const supabase = await createClient()
 
   const user: SignUpWithPasswordCredentials = {
@@ -45,31 +44,22 @@ export async function signup(data: {
   const userResponse = await supabase.auth.signUp(user)
 
   if (userResponse.error || !userResponse.data.user) {
-    return { error: userResponse.error }
-  }
-
-  const buckerResponse = await supabase.storage.createBucket(
-    userResponse.data.user.id,
-    {
-      public: true,
-    }
-  )
-
-  if (buckerResponse.error) {
-    return { error: buckerResponse.error }
+    console.error(userResponse.error)
+    return { error: "signUp() error" }
   }
 
   revalidatePath('/')
-  return { error: null }
+  return {}
 }
 
-export async function signOut(): Promise<{ error: AuthError | null }> {
+export async function signOut(): Promise<{ error?: string }> {
   const supabase = await createClient()
   const { error } = await supabase.auth.signOut()
 
   if (error) {
-    return { error: error }
+    console.error(error)
+    return { error: 'signOut() error' }
   }
   revalidatePath('/')
-  return { error: null }
+  return {}
 }

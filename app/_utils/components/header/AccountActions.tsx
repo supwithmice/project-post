@@ -28,7 +28,10 @@ export default function AccountActions({user}: {user: User | null}) {
     )
   } else {
     async function handleSignout() {
-      await signOut()
+      const { error } = await signOut()
+      if (error){
+        redirect('/error')
+      }
       redirect('/')
     }
 

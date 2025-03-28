@@ -12,17 +12,16 @@ import {
   Button,
 } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { Project, ProjectSubmit } from '../../types'
+import { Project, ProjectSubmit } from '../types'
 import classes from './ProjectsPanel.module.css'
-import ProjectContent from './ProjectContent'
+import ProjectContent from '../_utils/components/ProjectContent'
 import { useState } from 'react'
 import cx from 'clsx'
 import { IconEdit } from '@tabler/icons-react'
-import { editProject } from '../../account/actions'
+import { deleteProject, editProject } from './actions'
 import { modals } from '@mantine/modals'
-import ProjectEditor from './ProjectEditor'
+import ProjectEditor from '../_utils/components/ProjectEditor'
 import { redirect } from 'next/navigation'
-import { revalidatePath } from 'next/cache'
 
 export default function ProjectsPanel({ projects }: { projects: Project[] }) {
   const [opened, { toggle, close }] = useDisclosure()
@@ -36,21 +35,49 @@ export default function ProjectsPanel({ projects }: { projects: Project[] }) {
       console.error(error)
       redirect('/error')
     }
-    revalidatePath('/account')
     modals.closeAll()
-    redirect('/account')
   }
 
   const openEditModal = (project: Project) => {
     modals.open({
       title: `Редактировать проект`,
       centered: true,
+      fullScreen: true,
+      zIndex: 1100,
       children: (
         <ProjectEditor
           submitText="Сохранить"
           onSubmit={(newProject) => handleEdit(project.id, newProject)}
           otherActions={[
-            <Button variant="light" onClick={modals.closeAll}>
+            <Button
+            key={1}
+              color="red"
+              onClick={() => {
+                modals.openConfirmModal({
+                  title: 'Удалить проект',
+                  centered: true,
+                  zIndex: 1200,
+                  removeScrollProps: { removeScrollBar: false },
+                  children: (
+                    <Text size="sm">Вы точно хотите удалить этот проект?</Text>
+                  ),
+                  confirmProps: { color: 'red' },
+                  labels: { cancel: 'Отмена', confirm: 'Удалить' },
+                  onConfirm: async () => {
+                    const { error } = await deleteProject(project.id)
+                    if (error) {
+                      console.error(error)
+                      redirect('/error')
+                    }
+                    setProjectOpened(0)
+                    modals.closeAll()
+                  },
+                })
+              }}
+            >
+              Удалить проект
+            </Button>,
+            <Button key={2} variant="light" onClick={modals.closeAll}>
               Отмена
             </Button>,
           ]}

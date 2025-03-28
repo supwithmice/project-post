@@ -8,13 +8,13 @@ import { submitProject } from './actions'
 import { redirect } from 'next/navigation'
 
 // welcome to hell, again
-// edit: hell was moved to ProjectEdit.tsx
+// edit: hell was moved to ProjectEditor.tsx
 
 export default function CreatePage() {
   async function onSubmit(project: ProjectSubmit) {
-    const { uid, error, errorType } = await submitProject(project)
+    const { uid, error } = await submitProject(project)
     if (error) {
-      console.error(error, errorType)
+      console.error(error)
       redirect('/error')
     }
     redirect(`/projects/${uid}`)

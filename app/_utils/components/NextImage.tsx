@@ -46,7 +46,7 @@ export default function NextImage({
         (hoverable || hoverIcon) && classes.hoverable
       )}
       style={{
-        aspectRatio: aspectRatio ? aspectRatio : '16 / 9',
+        aspectRatio: aspectRatio ? aspectRatio : '16 / 10',
       }}
     >
       <Image
@@ -62,6 +62,7 @@ export default function NextImage({
       />
       {hoverIcon && (
         <ActionIcon
+        autoContrast={false}
           classNames={{
             root: cx(classes.icon, classNames?.iconRoot),
             icon: classNames?.icon,

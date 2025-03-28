@@ -76,7 +76,7 @@ export default function ProjectEditor({
           <IconPhoto size={20} />
           <Text lineClamp={1}>
             {isImage(image)
-              ? image.imageUrl.split('/').toReversed()[0]
+              ? image.imageUrl.split('/').pop()
               : image.file.name}
           </Text>
         </Group>
@@ -110,7 +110,7 @@ export default function ProjectEditor({
 
   // files
   const files = form.getValues().files.map((file, index) => (
-    <Card key={index} p="sm">
+    <Card key={index+10000} p="sm">
       <Group justify="space-between">
         <Group gap="xs">
           {getFileIcon(isFileData(file) ? file.fileType : file.type)}
@@ -180,15 +180,18 @@ export default function ProjectEditor({
                 description="Это описание будет указано на странице проекта"
                 {...form.getInputProps('description')}
               />
+              <Stack gap={0}> 
+
               <FileInput
                 disabled={loading}
                 label="Баннер"
-                description="Изображение на карточке проекта in the catalog"
+                description="Изображение на карточке проекта в каталоге"
                 {...form.getInputProps('banner')}
-              />
+                />
               {initialValues && typeof initialValues.banner === 'string' && (
-                <Anchor href={initialValues.banner}>Текущий баннер</Anchor>
+                <Anchor fz='sm' href={initialValues.banner}>Текущий баннер</Anchor>
               )}
+              </Stack>
             </Stack>
           </Fieldset>
         </Grid.Col>

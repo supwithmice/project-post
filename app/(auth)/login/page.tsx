@@ -109,7 +109,7 @@ export default function LoginPage() {
       setLoading(false)
       setMsg(
         <Text fz="sm" c="red">
-          {error.message}
+          {error}
         </Text>
       )
     } else {
@@ -211,6 +211,7 @@ export default function LoginPage() {
                 <ColorInput
                   disabled={loading}
                   defaultValue={'#7950f2'}
+                  withEyeDropper={false}
                   label="Цвет"
                   description="Изменяет цвет сайта"
                   swatches={[

@@ -66,3 +66,8 @@ export type ProjectSubmit = {
     | Image[]
   files: File[] | FileData[]
 }
+
+export type FileWithDesc = {
+  file: File
+  description: string
+}

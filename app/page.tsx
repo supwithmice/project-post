@@ -1,4 +1,4 @@
-import { Box, Grid, Title } from '@mantine/core'
+import { Box, Divider, Grid, Stack, Title } from '@mantine/core'
 import ProjectCard from './_utils/components/ProjectCard'
 import { fetchProjects } from './projects/actions'
 import { redirect } from 'next/navigation'
@@ -19,17 +19,18 @@ export default async function HomePage() {
   }
 
   return (
-    <>
+    <Stack>
       {/* <GoogleOneTap /> */}
       <Title order={2} ml="sm">
         Каталог проектов
       </Title>
+      <Divider/>
       <Grid gutter={{ base: 'sm', sm: 'md', lg: 'xl' }} my="md">
         {data &&
           data.map((project, index) => (
             <ProjectCard key={index} project={project} />
           ))}
       </Grid>
-    </>
+    </Stack>
   )
 }
