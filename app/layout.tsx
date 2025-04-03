@@ -12,10 +12,11 @@ import Header from './_utils/components/header/Header'
 import { ModalsProvider } from '@mantine/modals'
 import AccountActions from './_utils/components/header/AccountActions'
 import { createClient } from './_utils/supabase/server'
+import { Metadata } from 'next'
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Project Post',
-  description: 'I am using Mantine with Next.js!',
+  description: 'Домашняя страница Project Post',
 }
 
 export default async function RootLayout({
@@ -23,8 +24,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // const content = lazy()
-
   const supabase = await createClient()
   const {
     data: { user },

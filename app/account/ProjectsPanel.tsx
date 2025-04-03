@@ -29,14 +29,14 @@ export default function ProjectsPanel({ projects }: { projects: Project[] }) {
 
   const isProjects = projects.length > 0
 
-  const handleEdit = async (uid: string, newProject: ProjectSubmit) => {
-    const { error } = await editProject(uid, newProject)
-    if (error) {
-      console.error(error)
-      redirect('/error')
+  async function handleEdit(uid: string, newProject: ProjectSubmit){
+      const { error } = await editProject(uid, newProject)
+      if (error) {
+        console.error(error)
+        redirect('/error')
+      }
+      modals.closeAll()
     }
-    modals.closeAll()
-  }
 
   const openEditModal = (project: Project) => {
     modals.open({
@@ -47,7 +47,8 @@ export default function ProjectsPanel({ projects }: { projects: Project[] }) {
       children: (
         <ProjectEditor
           submitText="Сохранить"
-          onSubmit={(newProject) => handleEdit(project.id, newProject)}
+          doOnSubmit='edit'
+          onEdit={(newProject) => handleEdit(project.id, newProject)}
           otherActions={[
             <Button
             key={1}

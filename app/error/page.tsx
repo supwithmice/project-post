@@ -1,4 +1,9 @@
 import { Title } from '@mantine/core'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Ошибка',
+}
 
 export default function ErrorPage() {
   return (

@@ -1,7 +1,7 @@
 'use client'
 
 import { useForm } from '@mantine/form'
-import { FileData, isFileData, isImage, ProjectSubmit } from '../../types'
+import { isFileData, isImage, ProjectSubmit } from '../../types'
 import {
   Card,
   Group,
@@ -21,6 +21,8 @@ import {
 import { IconPhoto, IconTrash, IconUpload } from '@tabler/icons-react'
 import { getFileIcon } from './ProjectContent'
 import { useState, useEffect } from 'react'
+import { redirect } from 'next/navigation'
+import { submitProject } from '../../create/actions'
 
 // here lies new hell, better and worse at the same time
 
@@ -28,13 +30,25 @@ export default function ProjectEditor({
   submitText,
   initialValues,
   otherActions,
-  onSubmit,
+  doOnSubmit,
+  onEdit
 }: {
   submitText: string
   initialValues?: ProjectSubmit
   otherActions?: React.ReactNode[]
-  onSubmit: (project: ProjectSubmit) => void
+  doOnSubmit: 'submit' | 'edit'
+  onEdit?: (project: ProjectSubmit) => void
 }) {
+  // this is ass refactoring
+  async function submit(project: ProjectSubmit) {
+    const { uid, error } = await submitProject(project)
+    if (error) {
+      console.error(error)
+      redirect('/error')
+    }
+    redirect(`/projects/${uid}`)
+  }
+
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -43,7 +57,12 @@ export default function ProjectEditor({
 
   async function handleSubmit(project: ProjectSubmit) {
     setLoading(true)
-    onSubmit(project)
+    if (doOnSubmit === 'submit') {
+      submit(project)
+    } 
+    if (doOnSubmit === 'edit' && onEdit) {
+      onEdit(project)
+    } 
   }
 
   // root form
@@ -75,9 +94,7 @@ export default function ProjectEditor({
         <Group gap="xs">
           <IconPhoto size={20} />
           <Text lineClamp={1}>
-            {isImage(image)
-              ? image.imageUrl.split('/').pop()
-              : image.file.name}
+            {isImage(image) ? image.imageUrl.split('/').pop() : image.file.name}
           </Text>
         </Group>
         <ActionIcon
@@ -110,11 +127,13 @@ export default function ProjectEditor({
 
   // files
   const files = form.getValues().files.map((file, index) => (
-    <Card key={index+10000} p="sm">
+    <Card key={index + 10000} p="sm">
       <Group justify="space-between">
         <Group gap="xs">
           {getFileIcon(isFileData(file) ? file.fileType : file.type)}
-          <Text lineClamp={1}>{isFileData(file) ? file.fileName : file.name}</Text>
+          <Text lineClamp={1}>
+            {isFileData(file) ? file.fileName : file.name}
+          </Text>
         </Group>
         <ActionIcon
           variant="subtle"
@@ -180,17 +199,19 @@ export default function ProjectEditor({
                 description="Это описание будет указано на странице проекта"
                 {...form.getInputProps('description')}
               />
-              <Stack gap={0}> 
-
-              <FileInput
-                disabled={loading}
-                label="Баннер"
-                description="Изображение на карточке проекта в каталоге"
-                {...form.getInputProps('banner')}
+              <Stack gap={0}>
+                <FileInput
+                  disabled={loading}
+                  label="Баннер"
+                  description="Изображение на карточке проекта в каталоге"
+                  accept="image/png,image/jpeg"
+                  {...form.getInputProps('banner')}
                 />
-              {initialValues && typeof initialValues.banner === 'string' && (
-                <Anchor fz='sm' href={initialValues.banner}>Текущий баннер</Anchor>
-              )}
+                {initialValues && typeof initialValues.banner === 'string' && (
+                  <Anchor fz="sm" href={initialValues.banner}>
+                    Текущий баннер
+                  </Anchor>
+                )}
               </Stack>
             </Stack>
           </Fieldset>
@@ -222,6 +243,9 @@ export default function ProjectEditor({
             </Stack>
           </Fieldset>
           <Fieldset legend="Другие файлы">
+            <Text fz="xs" c="gray">
+              Максимальный размер файла 50МБ
+            </Text>
             <Stack>
               {files}
               <Group justify="center">

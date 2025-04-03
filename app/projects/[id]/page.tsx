@@ -1,10 +1,45 @@
-import { Title, Avatar, Stack, Badge, GridCol, Grid, Card, Text } from '@mantine/core'
+import {
+  Title,
+  Avatar,
+  Stack,
+  Badge,
+  GridCol,
+  Grid,
+  Card,
+  Text,
+} from '@mantine/core'
 import classes from './page.module.css'
 import NextImage from '../../_utils/components/NextImage'
 import ProjectContent from '../../_utils/components/ProjectContent'
 import NotFound from '../../not-found'
 import { fetchProjectById } from '../actions'
 import { redirect } from 'next/navigation'
+import { Metadata } from 'next'
+import { createClient } from '../../_utils/supabase/server'
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}): Promise<Metadata> {
+  const { id } = await params
+
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('projects')
+    .select(`name,brief_description`)
+    .eq('project_uuid', id)
+    .single()
+
+  if (error) {
+    return { title: 'Страница проекта' }
+  }
+
+  return {
+    title: data.name,
+    description: data.brief_description,
+  }
+}
 
 export default async function ProjectPage({
   params,
@@ -14,7 +49,7 @@ export default async function ProjectPage({
   const id = (await params).id
 
   const { data, error } = await fetchProjectById(id)
-  if(error){
+  if (error) {
     console.error(error)
     redirect('/error')
   }

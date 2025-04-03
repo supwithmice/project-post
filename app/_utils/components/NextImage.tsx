@@ -50,6 +50,7 @@ export default function NextImage({
       }}
     >
       <Image
+        loading="lazy"
         className={classNames?.image}
         style={{
           borderRadius: radius ? `var(--mantine-radius-${radius})` : undefined,
@@ -62,7 +63,7 @@ export default function NextImage({
       />
       {hoverIcon && (
         <ActionIcon
-        autoContrast={false}
+          autoContrast={false}
           classNames={{
             root: cx(classes.icon, classNames?.iconRoot),
             icon: classNames?.icon,

@@ -1,6 +1,11 @@
 import { Stack, Title } from '@mantine/core'
 import NextImage from './_utils/components/NextImage'
 import NotFoundSvg from './_utils/res/not-found.svg'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Страница не найдена',
+}
 
 export default function NotFound({ text }: { text?: string }) {
   return (

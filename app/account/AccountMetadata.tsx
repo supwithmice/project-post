@@ -20,9 +20,9 @@ import {
 } from '@mantine/core'
 import { IconEdit } from '@tabler/icons-react'
 import { useForm } from '@mantine/form'
-import classes from './Metadata.module.css'
+import classes from './AccountMetadata.module.css'
 
-export default function Metadata({ user }: { user: User }) {
+export default function AccountMetadata({ user }: { user: User }) {
   const [loading, setLoading] = useState(false)
 
   const handleMetadata = async (values: { name: string; color: string }) => {

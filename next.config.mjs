@@ -11,12 +11,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'dummyimage.com',
-        pathname: '/**',
-      },
-      {
-        protocol: 'http',
-        hostname: '127.0.0.1',
+        hostname: process.env.NEXT_PUBLIC_SUPABASE_URL.replace('https://', ''),
         pathname: '/**',
       },
     ],

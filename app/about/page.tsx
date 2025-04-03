@@ -1,4 +1,9 @@
 import { Divider, List, ListItem, Stack, Text, Title } from '@mantine/core'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Project Post | О проекте',
+}
 
 export default function About() {
   return (

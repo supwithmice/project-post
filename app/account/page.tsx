@@ -1,9 +1,14 @@
 import { GridCol, Grid } from '@mantine/core'
 import { fetchUserAndProjects } from './actions'
 import { redirect } from 'next/navigation'
-import Metadata from './Metadata'
+import AccountMetadata from './AccountMetadata'
 import AccountActions from './AccountActions'
 import ProjectsPanel from './ProjectsPanel'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Project Post | Аккаунт',
+}
 
 export default async function AccountPage() {
   const { error, user, projects } = await fetchUserAndProjects()
@@ -15,10 +20,10 @@ export default async function AccountPage() {
     <>
       <Grid gutter={{ base: 'sm', sm: 'lg' }} mb="sm">
         <GridCol span={{ base: 12, sm: 4 }}>
-          <Metadata user={user} />
+          <AccountMetadata user={user} />
         </GridCol>
         <GridCol span={{ base: 12, sm: 8 }}>
-          <AccountActions projects={projects}/>
+          <AccountActions projects={projects} />
         </GridCol>
       </Grid>
       <ProjectsPanel projects={projects} />

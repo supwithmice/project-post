@@ -2,6 +2,12 @@ import { Box, Divider, Grid, Stack, Title } from '@mantine/core'
 import ProjectCard from './_utils/components/ProjectCard'
 import { fetchProjects } from './projects/actions'
 import { redirect } from 'next/navigation'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Project Post',
+  description: 'Домашняя страница Project Post',
+}
 
 export default async function HomePage() {
   const { data, error } = await fetchProjects()
