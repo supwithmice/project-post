@@ -238,7 +238,7 @@ export async function getUploader(
       brief_description: project.briefDescription.trim(),
       description: project.description ? project.description.trim() : undefined,
       author_uuid: user.id,
-      banner_url: bannerFullPath ? baseUrl + bannerFullPath : undefined,
+      banner_url: bannerFullPath ? bannerFullPath : undefined,
       images: imageList,
       files: fileList,
     })
@@ -264,7 +264,7 @@ export async function getUploader(
           ? project.description.trim()
           : undefined,
         author_uuid: user.id,
-        banner_url: bannerFullPath ? baseUrl + bannerFullPath : undefined,
+        banner_url: bannerFullPath ? bannerFullPath : undefined,
         images: imageList,
         files: fileList,
       })

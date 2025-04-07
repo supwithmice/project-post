@@ -142,8 +142,7 @@ export async function changeMetadata(
 
 export async function editProject(
   projectUid: string,
-  newProject: ProjectSubmit,
-  oldBanner?: string | undefined | null // what is an antipattern
+  newProject: ProjectSubmit
 ): Promise<{ error?: string }> {
   const uploader = await getUploader(projectUid)
   if (typeof uploader === 'string') {
@@ -165,15 +164,18 @@ export async function editProject(
     return { error: 'image upload error' }
   }
 
-  let banner = oldBanner ? oldBanner : undefined
-  if (newProject.banner) {
-    // upload banner
+  let banner
+  if (newProject.banner && !(typeof newProject.banner === "string")) {
+    // means this is a File. upload banner
     const bannerRes = await uploader.uploadBanner(newProject.banner)
     if (bannerRes.error) {
       console.error(bannerRes.error)
       return { error: 'banner upload error' }
     }
     banner = bannerRes.bannerFullPath
+  } else {
+    // there was no banner or banner wasn't changed
+    banner = newProject.banner
   }
 
   // update database entry
