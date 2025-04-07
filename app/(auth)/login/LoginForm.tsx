@@ -177,7 +177,6 @@ export default function LoginForm() {
                 withAsterisk
                 disabled={loading}
                 label="Имя пользователя"
-                placeholder="Joe mama"
                 leftSection={<IconUser size={16} />}
                 aria-label="Имя пользователя"
                 {...signUpForm.getInputProps('username')}

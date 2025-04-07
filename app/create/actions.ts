@@ -74,6 +74,7 @@ export async function submitProject(
   return { uid: projectUid }
 }
 
+// oh hell naw
 interface ProjectUploader {
   uploadFiles: (
     files: File[] | FileData[] | (File | FileData)[]
@@ -205,6 +206,7 @@ export async function getUploader(
     banner: File | string
   ): Promise<{ error?: StorageError; bannerFullPath?: string }> {
     if (typeof banner === 'string') {
+      // this means banner hadn't been changed
       return { bannerFullPath: banner }
     }
     const { data, error } = await supabase.storage

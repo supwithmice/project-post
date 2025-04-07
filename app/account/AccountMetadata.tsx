@@ -46,7 +46,6 @@ export default function AccountMetadata({ user }: { user: User }) {
         <form onSubmit={metadata.onSubmit((values) => handleMetadata(values))}>
           <TextInput
             label="Имя"
-            placeholder="ballcrusher123"
             disabled={loading}
             {...metadata.getInputProps('name')}
           />

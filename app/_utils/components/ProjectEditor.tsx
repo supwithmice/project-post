@@ -40,6 +40,7 @@ export default function ProjectEditor({
   onEdit?: (project: ProjectSubmit) => void
 }) {
   // this is ass refactoring
+  // me one week later: yeah this whole thing is ass you idiot what were you thinking
   async function submit(project: ProjectSubmit) {
     const { uid, error } = await submitProject(project)
     if (error) {

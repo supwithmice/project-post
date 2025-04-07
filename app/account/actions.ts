@@ -142,7 +142,8 @@ export async function changeMetadata(
 
 export async function editProject(
   projectUid: string,
-  newProject: ProjectSubmit
+  newProject: ProjectSubmit,
+  oldBanner?: string | undefined | null // what is an antipattern
 ): Promise<{ error?: string }> {
   const uploader = await getUploader(projectUid)
   if (typeof uploader === 'string') {
@@ -164,7 +165,7 @@ export async function editProject(
     return { error: 'image upload error' }
   }
 
-  let banner
+  let banner = oldBanner ? oldBanner : undefined
   if (newProject.banner) {
     // upload banner
     const bannerRes = await uploader.uploadBanner(newProject.banner)

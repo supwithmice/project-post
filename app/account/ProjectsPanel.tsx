@@ -29,8 +29,8 @@ export default function ProjectsPanel({ projects }: { projects: Project[] }) {
 
   const isProjects = projects.length > 0
 
-  async function handleEdit(uid: string, newProject: ProjectSubmit){
-      const { error } = await editProject(uid, newProject)
+  async function handleEdit(oldProject: Project, newProject: ProjectSubmit){
+      const { error } = await editProject(oldProject.id, newProject, oldProject.bannerUrl)
       if (error) {
         console.error(error)
         redirect('/error')
@@ -48,7 +48,7 @@ export default function ProjectsPanel({ projects }: { projects: Project[] }) {
         <ProjectEditor
           submitText="Сохранить"
           doOnSubmit='edit'
-          onEdit={(newProject) => handleEdit(project.id, newProject)}
+          onEdit={(newProject) => handleEdit(project, newProject)}
           otherActions={[
             <Button
             key={1}
