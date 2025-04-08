@@ -32,3 +32,7 @@ body {
   margin-right: -50%;
   transform: translate(-50%, -50%);
 }
+
+.preserveText {
+  white-space: pre-wrap;
+}

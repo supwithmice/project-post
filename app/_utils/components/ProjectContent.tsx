@@ -79,7 +79,7 @@ export default function ProjectContent({ project }: { project: Project }) {
           <Title order={3} mb="sm">
             Описание
           </Title>
-          <Text>{project.description}</Text>
+          <Text className='preserveText'>{project.description}</Text>
         </Card>
       )}
       {project.images.length > 0 && (
