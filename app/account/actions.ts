@@ -141,10 +141,10 @@ export async function changeMetadata(
 }
 
 export async function editProject(
-  projectUid: string,
+  oldProject: Project,
   newProject: ProjectSubmit
 ): Promise<{ error?: string }> {
-  const uploader = await getUploader(projectUid)
+  const uploader = await getUploader(oldProject.id)
   if (typeof uploader === 'string') {
     console.error(uploader)
     return { error: uploader }
@@ -164,34 +164,36 @@ export async function editProject(
     return { error: 'image upload error' }
   }
 
-  let banner
-  if (newProject.banner && !(typeof newProject.banner === "string")) {
-    // means this is a File. upload banner
+  let bannerUrl
+  if (newProject.banner) {
+    // there's a new banner
     const bannerRes = await uploader.uploadBanner(newProject.banner)
     if (bannerRes.error) {
       console.error(bannerRes.error)
       return { error: 'banner upload error' }
     }
-    banner = bannerRes.bannerFullPath
+    bannerUrl = bannerRes.bannerUrl
   } else {
-    // there was no banner or banner wasn't changed
-    banner = newProject.banner
+    // keep old banner
+    bannerUrl = oldProject.bannerUrl
   }
 
   // update database entry
-  const dbRes = await uploader.updateEntry(
-    newProject,
-    imageRes.imageList!,
-    fileRes.fileList!,
-    banner
-  )
+  const dbRes = await uploader.updateEntry({
+    name: newProject.name,
+    briefDescription: newProject.briefDescription,
+    description: newProject.description,
+    fileList: fileRes.fileList ? fileRes.fileList : [],
+    imageList: imageRes.imageList ? imageRes.imageList : [],
+    bannerUrl: bannerUrl ? bannerUrl : undefined,
+  })
   if (dbRes.error) {
     console.error(dbRes.error)
     return { error: 'database error' }
   }
 
   revalidatePath('/account')
-  revalidatePath(`/projects/${projectUid}`)
+  revalidatePath(`/projects/${oldProject.id}`)
   revalidatePath('/')
   return {}
 }
@@ -214,7 +216,7 @@ export async function deleteProject(
     return { error: 'database error' }
   }
 
-  if (dbRes.data.files.length > 1 || dbRes.data.images.length > 1) {
+  if (dbRes.data.files.length > 0 || dbRes.data.images.length > 0) {
     // delete project files
     const filesToRemove = dbRes.data.files.map((file) =>
       // @ts-ignore (nope. not dealing with that)

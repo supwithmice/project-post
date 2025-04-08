@@ -1,7 +1,7 @@
 'use client'
 
 import { useForm } from '@mantine/form'
-import { isFileData, isImage, ProjectSubmit } from '../../types'
+import { isFileData, isImage, Project, ProjectSubmit } from '../../types'
 import {
   Card,
   Group,
@@ -28,17 +28,22 @@ import { submitProject } from '../../create/actions'
 
 export default function ProjectEditor({
   submitText,
-  initialValues,
+  initialProject,
   otherActions,
   doOnSubmit,
-  onEdit
+  onEdit,
 }: {
   submitText: string
-  initialValues?: ProjectSubmit
+  initialProject?: Project
   otherActions?: React.ReactNode[]
   doOnSubmit: 'submit' | 'edit'
   onEdit?: (project: ProjectSubmit) => void
 }) {
+  const oldBannerUrl =
+    initialProject && initialProject.bannerUrl
+      ? initialProject.bannerUrl
+      : undefined
+
   // this is ass refactoring
   // me one week later: yeah this whole thing is ass you idiot what were you thinking
   async function submit(project: ProjectSubmit) {
@@ -60,18 +65,22 @@ export default function ProjectEditor({
     setLoading(true)
     if (doOnSubmit === 'submit') {
       submit(project)
-    } 
+    }
     if (doOnSubmit === 'edit' && onEdit) {
       onEdit(project)
-    } 
+    }
   }
 
   // root form
   const form = useForm<ProjectSubmit>({
     mode: 'uncontrolled',
     validateInputOnBlur: true,
-    initialValues: initialValues
-      ? initialValues
+    initialValues: initialProject
+      ? {
+          ...initialProject, 
+          description: initialProject.description ? initialProject.description : undefined,
+          banner: undefined
+        }
       : {
           name: '',
           briefDescription: '',
@@ -208,8 +217,8 @@ export default function ProjectEditor({
                   accept="image/png,image/jpeg"
                   {...form.getInputProps('banner')}
                 />
-                {initialValues && typeof initialValues.banner === 'string' && (
-                  <Anchor fz="sm" href={initialValues.banner}>
+                {oldBannerUrl && (
+                  <Anchor fz="sm" href={oldBannerUrl}>
                     Текущий баннер
                   </Anchor>
                 )}

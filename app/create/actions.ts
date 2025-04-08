@@ -56,21 +56,22 @@ export async function submitProject(
       console.error(bannerRes.error)
       return { error: 'banner upload error' }
     }
-    banner = bannerRes.bannerFullPath
+    banner = bannerRes.bannerUrl
   }
 
   // add database entry
-  const dbRes = await uploader.createEntry(
-    project,
-    imageRes.imageList!,
-    fileRes.fileList!,
-    banner
-  )
+  const dbRes = await uploader.createEntry({
+    name: project.name,
+    briefDescription: project.briefDescription,
+    description: project.description,
+    fileList: fileRes.fileList ? fileRes.fileList : [],
+    imageList: imageRes.imageList ? imageRes.imageList : [],
+    bannerUrl: banner,
+  })
   if (dbRes.error) {
     console.error(dbRes.error)
     return { error: 'database error' }
   }
-
   return { uid: projectUid }
 }
 
@@ -83,20 +84,24 @@ interface ProjectUploader {
     images: FileWithDesc[] | Image[] | (FileWithDesc | Image)[]
   ) => Promise<{ error?: StorageError; imageList?: Image[] }>
   uploadBanner: (
-    banner: File | string
-  ) => Promise<{ error?: StorageError; bannerFullPath?: string }>
-  createEntry: (
-    project: ProjectSubmit,
-    imageList: Image[],
-    fileList: FileData[],
-    bannerFullPath?: string
-  ) => Promise<{ error?: PostgrestError }>
-  updateEntry: (
-    project: ProjectSubmit,
-    imageList: Image[],
-    fileList: FileData[],
-    bannerFullPath: string | undefined
-  ) => Promise<{ error?: PostgrestError }>
+    banner: File
+  ) => Promise<{ error?: StorageError; bannerUrl?: string }>
+  createEntry: (params: {
+    name: string
+    briefDescription: string
+    description?: string
+    bannerUrl?: string
+    imageList: Image[]
+    fileList: FileData[]
+  }) => Promise<{ error?: PostgrestError }>
+  updateEntry: (params: {
+    name: string
+    briefDescription: string
+    description?: string
+    bannerUrl?: string
+    imageList: Image[]
+    fileList: FileData[]
+  }) => Promise<{ error?: PostgrestError }>
 }
 
 export async function getUploader(
@@ -203,12 +208,8 @@ export async function getUploader(
   }
 
   async function uploadBanner(
-    banner: File | string
-  ): Promise<{ error?: StorageError; bannerFullPath?: string }> {
-    if (typeof banner === 'string') {
-      // this means banner hadn't been changed
-      return { bannerFullPath: banner }
-    }
+    banner: File
+  ): Promise<{ error?: StorageError; bannerUrl?: string }> {
     const { data, error } = await supabase.storage
       .from('files')
       .upload(
@@ -223,22 +224,31 @@ export async function getUploader(
     if (error) {
       return { error: error }
     }
-    return { bannerFullPath: data.fullPath }
+    return { bannerUrl: baseUrl + data.fullPath }
   }
 
-  async function createEntry(
-    project: ProjectSubmit,
-    imageList: Image[],
-    fileList: FileData[],
-    bannerFullPath: string | undefined
-  ): Promise<{ error?: PostgrestError }> {
+  async function createEntry({
+    name,
+    briefDescription,
+    description,
+    bannerUrl,
+    imageList,
+    fileList,
+  }: {
+    name: string
+    briefDescription: string
+    description?: string
+    bannerUrl?: string
+    imageList: Image[]
+    fileList: FileData[]
+  }): Promise<{ error?: PostgrestError }> {
     const { error } = await supabase.from('projects').insert({
       project_uuid: projectUid,
-      name: project.name.trim(),
-      brief_description: project.briefDescription.trim(),
-      description: project.description ? project.description.trim() : undefined,
+      name: name.trim(),
+      brief_description: briefDescription.trim(),
+      description: description ? description.trim() : undefined,
       author_uuid: user.id,
-      banner_url: bannerFullPath ? bannerFullPath : undefined,
+      banner_url: bannerUrl ? bannerUrl : undefined,
       images: imageList,
       files: fileList,
     })
@@ -248,23 +258,30 @@ export async function getUploader(
     return {}
   }
 
-  async function updateEntry(
-    project: ProjectSubmit,
-    imageList: Image[],
-    fileList: FileData[],
-    bannerFullPath: string | undefined
-  ): Promise<{ error?: PostgrestError }> {
+  async function updateEntry({
+    name,
+    briefDescription,
+    description,
+    bannerUrl,
+    imageList,
+    fileList,
+  }: {
+    name: string
+    briefDescription: string
+    description?: string
+    bannerUrl?: string
+    imageList: Image[]
+    fileList: FileData[]
+  }): Promise<{ error?: PostgrestError }> {
     const { error } = await supabase
       .from('projects')
       .update({
         project_uuid: projectUid,
-        name: project.name.trim(),
-        brief_description: project.briefDescription.trim(),
-        description: project.description
-          ? project.description.trim()
-          : undefined,
+        name: name.trim(),
+        brief_description: briefDescription.trim(),
+        description: description ? description.trim() : undefined,
         author_uuid: user.id,
-        banner_url: bannerFullPath ? bannerFullPath : undefined,
+        banner_url: bannerUrl ? bannerUrl : undefined,
         images: imageList,
         files: fileList,
       })

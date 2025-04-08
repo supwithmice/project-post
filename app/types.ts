@@ -57,7 +57,7 @@ export type ProjectSubmit = {
   name: string
   briefDescription: string
   description: string | undefined
-  banner: File | string | undefined
+  banner: File | undefined
   images:
     | {
         file: File

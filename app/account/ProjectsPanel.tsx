@@ -29,8 +29,8 @@ export default function ProjectsPanel({ projects }: { projects: Project[] }) {
 
   const isProjects = projects.length > 0
 
-  async function handleEdit(uid: string, newProject: ProjectSubmit){
-      const { error } = await editProject(uid, newProject)
+  async function handleEdit(oldProject: Project, newProject: ProjectSubmit){
+      const { error } = await editProject(oldProject, newProject)
       if (error) {
         console.error(error)
         redirect('/error')
@@ -48,7 +48,8 @@ export default function ProjectsPanel({ projects }: { projects: Project[] }) {
         <ProjectEditor
           submitText="Сохранить"
           doOnSubmit='edit'
-          onEdit={(newProject) => handleEdit(project.id, newProject)}
+          initialProject={project}
+          onEdit={(newProject) => handleEdit(project, newProject)}
           otherActions={[
             <Button
             key={1}
@@ -82,12 +83,6 @@ export default function ProjectsPanel({ projects }: { projects: Project[] }) {
               Отмена
             </Button>,
           ]}
-          initialValues={{
-            // look, i'm almost done with this project. i'll just make a workaround for images and files, then call it a day
-            ...project,
-            description: project.description ? project.description : undefined,
-            banner: project.bannerUrl ? project.bannerUrl : undefined,
-          }}
         />
       ),
     })
